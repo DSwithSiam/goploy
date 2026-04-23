@@ -51,35 +51,89 @@ go build -o goploy ./cmd/goploy
 	- Enter any environment variables (or leave blank)
 	- Answer "y" if you want to deploy a Celery worker
 
-4. The tool will:
-	- Connect to your server
-	- Install Nginx, Redis, Python dependencies
-	- Generate and upload Nginx config
-	- Generate and upload systemd service files (Gunicorn/Uvicorn, Celery)
-	- Upload your .env file
-	- Restart all services
+# Goploy
 
-## Example Workflow
+Goploy is an open-source CLI tool (written in Go) that lets you deploy Django and FastAPI apps to your VPS in minutes—Heroku-style, but on your own server.
+
+---
+
+## 🚀 What is Goploy?
+Goploy is a production-ready deployment tool for developers who want Heroku-like simplicity but full control. It connects to your VPS via SSH, installs all dependencies, configures Nginx, Gunicorn/Uvicorn, Celery, and more—automatically.
+
+---
+
+## ⚡️ Install (1 line)
 
 ```sh
-# 1. Build the CLI
-git clone https://github.com/DSwithSiam/goploy.git
-cd goploy
-go build -o goploy ./cmd/goploy
-
-# 2. Deploy your Django app
-./goploy deploy --domain example.com --server 1.2.3.4 --project /home/ubuntu/myapp --framework django
-
-# 3. Follow prompts for SSH, .env, and Celery
+curl -sSL https://raw.githubusercontent.com/DSwithSiam/goploy/main/scripts/install.sh | bash
 ```
 
 ---
 
-## Project Structure
-- `cmd/goploy/` - CLI entrypoint
-- `internal/cmd/` - Cobra commands
-- `pkg/` - Shared utilities
+## 🛠 Usage Example
+
+Deploy a Django app:
+```sh
+goploy deploy --domain example.com --server 1.2.3.4 --project /home/ubuntu/myapp --framework django
+```
+
+Deploy a FastAPI app:
+```sh
+goploy deploy --domain api.example.com --server 1.2.3.4 --project /home/ubuntu/api --framework fastapi
+```
+
+You’ll be prompted for SSH credentials, .env variables, and Celery worker (optional).
 
 ---
 
-For more details, see the code and issues on GitHub.
+## ✨ Features
+
+- One-line install via curl/bash
+- CLI tool with `deploy`, `init`, `destroy`, `logs` commands
+- SSH-based remote deployment
+- Supports Django (Gunicorn), FastAPI (Uvicorn), Celery, Redis
+- Auto-generates Nginx and systemd configs
+- Uploads .env securely
+- No daemon, no agent—runs locally, targets remote VPS
+
+---
+
+## 🧠 How it Works (Simple Flow)
+
+```mermaid
+graph TD
+	 A[GitHub Repo: Code & Binary] --> B[GitHub Releases: goploy-linux-amd64]
+	 B --> C[install.sh: User Installs]
+	 C --> D[goploy CLI: Runs Locally]
+	 D --> E[VPS: Remote Deploy via SSH]
+```
+
+---
+
+## Release Process (for maintainers)
+
+1. Build binary:
+	```sh
+	GOOS=linux GOARCH=amd64 go build -o goploy
+	mv goploy goploy-linux-amd64
+	```
+2. Go to GitHub → Releases → “Create new release”
+3. Tag: v1.0.0 (or next version)
+4. Upload binary: `goploy-linux-amd64`
+5. Save and publish
+
+---
+
+## Pro: GitHub Actions (CI/CD)
+
+You can automate the build & release with GitHub Actions in the future for true CI/CD.
+
+---
+
+## Contributing
+PRs and issues welcome! See CONTRIBUTING.md.
+
+---
+
+## License
+MIT
