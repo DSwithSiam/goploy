@@ -50,6 +50,15 @@ var deployCmd = &cobra.Command{
 		client.Run("sudo apt-get update -y")
 		client.Run("sudo apt-get install -y nginx redis-server python3-pip")
 
+		// Ask if Celery worker is needed before .env and systemd steps
+		celeryNeeded := false
+		fmt.Print("Deploy Celery worker? (y/N): ")
+		celeryAns, _ := reader.ReadString('\n')
+		celeryAns = strings.ToLower(strings.TrimSpace(celeryAns))
+		if celeryAns == "y" || celeryAns == "yes" {
+			celeryNeeded = true
+		}
+
 		// Install python dependencies
 		if framework == "django" {
 			fmt.Println("Installing Gunicorn for Django...")
@@ -58,14 +67,7 @@ var deployCmd = &cobra.Command{
 			fmt.Println("Installing Uvicorn for FastAPI...")
 			client.Run("sudo pip3 install uvicorn")
 		}
-
-		// Ask if Celery worker is needed before .env and systemd steps
-		celeryNeeded := false
-		fmt.Print("Deploy Celery worker? (y/N): ")
-		celeryAns, _ := reader.ReadString('\n')
-		celeryAns = strings.ToLower(strings.TrimSpace(celeryAns))
-		if celeryAns == "y" || celeryAns == "yes" {
-			celeryNeeded = true
+		if celeryNeeded {
 			fmt.Println("Installing Celery and Redis Python dependencies...")
 			client.Run("sudo pip3 install celery redis")
 		}
@@ -169,10 +171,7 @@ var deployCmd = &cobra.Command{
 		client.Run("sudo systemctl daemon-reload && sudo systemctl enable --now goploy-app.service")
 
 		// Celery worker (optional)
-		fmt.Print("Deploy Celery worker? (y/N): ")
-		celeryAns, _ := reader.ReadString('\n')
-		celeryAns = strings.ToLower(strings.TrimSpace(celeryAns))
-		if celeryAns == "y" || celeryAns == "yes" {
+		if celeryNeeded {
 			svcCfg.ExecStart = "celery -A app worker --loglevel=info"
 			celeryContent, err := config.GenerateCelery(svcCfg)
 			if err != nil {
