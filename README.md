@@ -13,16 +13,87 @@ This project is open-source and published at: [https://github.com/DSwithSiam/gop
 - SSH-based remote deployment
 
 
-## Installation
 
-1. Install Go (if not already): https://go.dev/doc/install
-2. Clone the repo and build the CLI:
+## How to Install & Use Goploy
+
+### 1. Traditional way (clone & build)
 
 ```sh
 git clone https://github.com/DSwithSiam/goploy.git
 cd goploy
 go build -o goploy ./cmd/goploy
+./goploy --help
 ```
+
+**Problems:**
+- Requires Go and build tools
+- More dependencies, more errors possible
+- Not as user-friendly for non-developers
+
+---
+
+### 2. Release-based install (easy way)
+
+**Recommended for most users!**
+
+**Step 1: Download the latest release**
+
+Go to: https://github.com/DSwithSiam/goploy/releases
+Download `goploy-linux-amd64.tar.gz` (or the binary for your OS)
+
+Or use wget:
+```sh
+wget https://github.com/DSwithSiam/goploy/releases/download/v1.0.0/goploy-linux-amd64
+```
+
+**Step 2: Extract and install**
+```sh
+tar -xvzf goploy-linux-amd64.tar.gz
+cd goploy
+chmod +x goploy
+sudo mv goploy /usr/local/bin/
+```
+
+**Step 3: Run**
+```sh
+goploy --help
+```
+
+---
+
+## Usage Example
+
+Deploy a Django app:
+```sh
+goploy deploy --domain example.com --server 1.2.3.4 --project /home/ubuntu/myapp --framework django
+```
+
+Deploy a FastAPI app:
+```sh
+goploy deploy --domain api.example.com --server 1.2.3.4 --project /home/ubuntu/api --framework fastapi
+```
+
+You’ll be prompted for SSH credentials, .env variables, and Celery worker (optional).
+
+
+### Deploy a Static Frontend (HTML/JS/CSS)
+
+Suppose your static site is in `/home/ubuntu/frontend` and you want to serve it at `frontend.example.com`:
+
+```sh
+goploy deploy --domain frontend.example.com --server 1.2.3.4 --project /home/ubuntu/frontend --framework static
+```
+
+**What happens:**
+- Goploy will set up Nginx to serve your static files from `/home/ubuntu/frontend`.
+- No backend server (Gunicorn/Uvicorn) is needed for static sites.
+
+**You’ll be prompted for:**
+- SSH credentials
+- (You can skip .env and Celery prompts for static sites)
+
+
+---
 
 ## CLI Commands
 
@@ -51,64 +122,6 @@ go build -o goploy ./cmd/goploy
 	- Enter any environment variables (or leave blank)
 	- Answer "y" if you want to deploy a Celery worker
 
-# Goploy
-
-Goploy is an open-source CLI tool (written in Go) that lets you deploy Django and FastAPI apps to your VPS in minutes—Heroku-style, but on your own server.
-
----
-
-## 🚀 What is Goploy?
-Goploy is a production-ready deployment tool for developers who want Heroku-like simplicity but full control. It connects to your VPS via SSH, installs all dependencies, configures Nginx, Gunicorn/Uvicorn, Celery, and more—automatically.
-
----
-
-## ⚡️ Install (1 line)
-
-```sh
-curl -sSL https://raw.githubusercontent.com/DSwithSiam/goploy/main/scripts/install.sh | bash
-```
-
----
-
-## 🛠 Usage Example
-
-Deploy a Django app:
-```sh
-goploy deploy --domain example.com --server 1.2.3.4 --project /home/ubuntu/myapp --framework django
-```
-
-Deploy a FastAPI app:
-```sh
-goploy deploy --domain api.example.com --server 1.2.3.4 --project /home/ubuntu/api --framework fastapi
-```
-
-You’ll be prompted for SSH credentials, .env variables, and Celery worker (optional).
-
----
-
-## ✨ Features
-
-- One-line install via curl/bash
-- CLI tool with `deploy`, `init`, `destroy`, `logs` commands
-- SSH-based remote deployment
-- Supports Django (Gunicorn), FastAPI (Uvicorn), Celery, Redis
-- Auto-generates Nginx and systemd configs
-- Uploads .env securely
-- No daemon, no agent—runs locally, targets remote VPS
-
----
-
-## 🧠 How it Works (Simple Flow)
-
-```mermaid
-graph TD
-	 A[GitHub Repo: Code & Binary] --> B[GitHub Releases: goploy-linux-amd64]
-	 B --> C[install.sh: User Installs]
-	 C --> D[goploy CLI: Runs Locally]
-	 D --> E[VPS: Remote Deploy via SSH]
-```
-
----
 
 
 ## Contributing
