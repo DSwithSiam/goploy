@@ -110,25 +110,6 @@ graph TD
 
 ---
 
-## Release Process (for maintainers)
-
-1. Build binary:
-	```sh
-	GOOS=linux GOARCH=amd64 go build -o goploy
-	mv goploy goploy-linux-amd64
-	```
-2. Go to GitHub → Releases → “Create new release”
-3. Tag: v1.0.0 (or next version)
-4. Upload binary: `goploy-linux-amd64`
-5. Save and publish
-
----
-
-## Pro: GitHub Actions (CI/CD)
-
-You can automate the build & release with GitHub Actions in the future for true CI/CD.
-
----
 
 ## Contributing
 PRs and issues welcome! See CONTRIBUTING.md.
